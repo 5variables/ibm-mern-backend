@@ -4,7 +4,7 @@ const eventRoutes = require('./routes/eventRoutes');
 
 const app = express();
 app.use(express.json());
-app.use('/events', eventRoutes);
+app.use('/', eventRoutes);
 
 const port = 3001;
 app.listen(port, () => {
