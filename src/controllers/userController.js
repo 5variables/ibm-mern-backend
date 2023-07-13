@@ -80,3 +80,12 @@ exports.verifyToken = async (req, res) => {
     res.json({auth: false});
   }
 }
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const events = await User.find();
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
