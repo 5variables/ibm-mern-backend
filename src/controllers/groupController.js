@@ -78,7 +78,7 @@ exports.confirmation = async (req, res) => {
   
       await group.save();
       await user.save();
-      
+
       return res.status(200).json({ message: 'Group confirmation successful' });
     } catch (error) {
       // Handle any errors that occur during the process
@@ -86,3 +86,25 @@ exports.confirmation = async (req, res) => {
       return res.status(500).json({ message: 'An error occurred while confirming the group' });
     }
   };
+
+exports.getGroupNameFromGroupId = async (req, res) => {
+    try {
+        const group = await Group.findById(req.body.groupId);
+
+        await group.save();
+
+        res.status(200).json(group.name);
+    } catch (error) {
+        console.log("Error getting the group", error);
+        res.status(500).json({ message: 'An error occurred while confirming the group' });
+    }
+};
+
+exports.getAll = async (req, res) => {
+    try {
+        const events = await Group.find();
+        res.json(events);
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+}
