@@ -20,6 +20,9 @@ const eventSchema = new mongoose.Schema({
   admin: {
     type: Boolean,
     default: false,
+  },
+  groups: {
+    type: [String]
   }
 });
 
