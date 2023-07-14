@@ -89,7 +89,7 @@ exports.confirmation = async (req, res) => {
 
 exports.getGroupNameFromGroupId = async (req, res) => {
     try {
-        const group = await Group.findById(req.body.groupId);
+        const group = await Group.findById(req.params.groupId);
 
         await group.save();
 
