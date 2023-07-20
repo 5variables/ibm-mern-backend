@@ -93,7 +93,7 @@ exports.getGroupNameFromGroupId = async (req, res) => {
 
         await group.save();
 
-        res.status(200).json(group.name);
+        res.status(200).json(group);
     } catch (error) {
         console.log("Error getting the group", error);
         res.status(500).json({ message: 'An error occurred while confirming the group' });
@@ -108,3 +108,72 @@ exports.getAll = async (req, res) => {
         res.status(500).json({ message: err.message });
       }
 }
+
+exports.invite = async (req, res) => {
+  const groupName = req.params.groupName;
+  const userMail = req.params.userMail;
+
+  try {
+    const group = await Group.findOne({ name: groupName });
+    const user = await User.findOne({ mail: userMail });
+
+    user.notifications.push(group._id);
+    
+    await user.save();
+    res.status(200).json({ message: "success" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+exports.confirmInvite = async (req, res) => {
+  const groupId = req.params.groupId;
+  const userMail = req.params.userMail;
+
+  try {
+
+    // Update the group document to add the userMail to the members field
+    const group = await Group.findByIdAndUpdate(
+      groupId,
+      { $addToSet: { members: userMail } }, // $addToSet ensures no duplicate entries
+      { new: true } // Return the updated document
+    );
+
+    // Find the user by mail and update both groups and notifications fields
+    const user = await User.findOneAndUpdate(
+      { mail: userMail },
+      { $addToSet: { groups: groupId }, $pull: { notifications: groupId } },
+      { new: true } // Return the updated document
+    );
+
+    res.status(200).json({ message: 'Invite confirmed successfully' });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+exports.quitGroup = async (req, res) => {
+  const groupId = req.params.groupId;
+  const userMail = req.params.userMail;
+
+  try {
+    // Update the group document to remove the userMail from the members field
+    // const group = await Group.findByIdAndUpdate(
+    //   groupId,
+    //   { $pull: { members: userMail } },
+    //   { new: true }
+    // );
+
+    // Update the user document to remove the groupId from the groups field
+    const user = await User.findOneAndUpdate(
+      { mail: userMail },
+      { $pull: { groups: groupId } },
+      { new: true }
+    );
+
+    res.status(200).json({ message: 'Success' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
