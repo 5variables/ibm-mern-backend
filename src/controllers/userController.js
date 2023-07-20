@@ -89,3 +89,14 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+
+exports.getNotifications = async (req, res) => {
+  const userMail = req.params.mail;
+
+  try {
+    const user = await User.findOne({ mail: userMail });
+    res.status(200).json(user.notifications);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}

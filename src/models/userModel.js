@@ -23,6 +23,9 @@ const eventSchema = new mongoose.Schema({
   },
   groups: {
     type: [String]
+  },
+  notifications: {
+    type: [String]
   }
 });
 
