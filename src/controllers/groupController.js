@@ -42,6 +42,15 @@ exports.createGroup = async (req, res) => {
     try {
         const newGroup = await group.save();
         const groupId = newGroup._id;  
+
+        
+        invitations.forEach(async (invitation) => {
+          const user = await User.findOne({ mail: invitation });
+          user.notifications.push(group._id);
+          await user.save();
+        })
+
+        
     
         // invitations.forEach((invitation) => {
         //     sendEmail(invitation, name, groupId);
