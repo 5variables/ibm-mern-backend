@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-async function sendEmail(invitation, groupTitle, members, groupId) {
+async function sendEmail(invitation, groupTitle, groupId) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -43,10 +43,10 @@ exports.createGroup = async (req, res) => {
         const newGroup = await group.save();
         const groupId = newGroup._id;  
     
-        invitations.forEach((invitation) => {
-            sendEmail(invitation, name, members, groupId);
-        });
-    
+        // invitations.forEach((invitation) => {
+        //     sendEmail(invitation, name, groupId);
+        // });
+      
         res.status(201).json(newGroup);
     } catch (err) {
         res.status(400).json({ message: err.message });
