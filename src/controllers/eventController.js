@@ -25,7 +25,7 @@ async function sendEmail(invitation, eventTitle, description, eventId) {
     to: invitation,
     subject: 'You are invited to ' + eventTitle + "!",
     text: description + '\n\nClick the link below to confirm your participation.\n\n',
-    html: '<p>Click <a href="http://localhost:3001/events/confirmation/' + eventId + '/' + invitation +'">here</a> to confirm your participation.</p>',
+    html: '<p>Click <a href="http://localhost:3000/event/' + eventId +'">here</a> to confirm your participation.</p>',
   };
 
   try {
@@ -101,3 +101,30 @@ exports.confirmation = async (req, res) => {
     return res.status(500).json({ message: 'An error occurred while confirming the event' });
   }
 };
+
+exports.attend = async (req, res) => {
+  const eventId = req.params.eventId;
+  const userMail = req.params.userMail;
+
+  try {
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+     // Add the userMail to the participants list
+     event.participants.push(userMail);
+
+     // Save the updated event
+     await event.save();
+ 
+     // Return a success message or any other response as needed
+     return res.status(200).json({ message: 'Event confirmation successful' });
+
+  } catch (error) {
+    console.error('Error confirming event:', error);
+    return res.status(500).json({ message: 'An error occurred while confirming the event' });
+  }
+
+}
