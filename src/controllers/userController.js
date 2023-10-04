@@ -100,3 +100,169 @@ exports.getNotifications = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+
+exports.delete = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+
+    // Use the deleteOne method to remove the user by _id
+    const result = await User.deleteOne({ _id: id });
+
+    // Check if a document was deleted
+    if (result.deletedCount === 1) {
+      return res.status(200).json({ message: 'User deleted successfully' });
+    } else {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+exports.updateFirstName = async (req, res) => {
+  const id = req.params.id;
+  const value = req.params.value;
+
+  try {
+
+    // Use the updateOne method to update the firstName field
+    const result = await User.updateOne(
+      { _id: id },
+      { $set: { firstName: value } }
+    );
+
+    // Check if a document was updated
+    if (result.modifiedCount === 1) {
+      return res.status(200).json({ message: 'firstName updated successfully' });
+    } else {
+      return res.status(404).json({ message: 'User not found' });
+    }
+  
+    
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+exports.updateLastName = async (req, res) => {
+  const id = req.params.id;
+  const value = req.params.value;
+
+  try {
+
+    // Use the updateOne method to update the firstName field
+    const result = await User.updateOne(
+      { _id: id },
+      { $set: { lastName: value } }
+    );
+
+    // Check if a document was updated
+    if (result.modifiedCount === 1) {
+      return res.status(200).json({ message: 'lastName updated successfully' });
+    } else {
+      return res.status(404).json({ message: 'User not found' });
+    }
+  
+    
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+exports.updateMail = async (req, res) => {
+  const id = req.params.id;
+  const value = req.params.value;
+
+  try {
+
+    // Use the updateOne method to update the firstName field
+    const result = await User.updateOne(
+      { _id: id },
+      { $set: { mail: value } }
+    );
+
+    // Check if a document was updated
+    if (result.modifiedCount === 1) {
+      return res.status(200).json({ message: 'mail updated successfully' });
+    } else {
+      return res.status(404).json({ message: 'User not found' });
+    }
+  
+    
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+exports.updatePassword = async (req, res) => {
+  const id = req.params.id;
+  const value = req.params.value;
+
+  try {
+
+    const hashedPassword = await bcrypt.hash(value, 10);
+
+    // Use the updateOne method to update the firstName field
+    const result = await User.updateOne(
+      { _id: id },
+      { $set: { password: hashedPassword } }
+    );
+
+    // Check if a document was updated
+    if (result.modifiedCount === 1) {
+      return res.status(200).json({ message: 'mail updated successfully' });
+    } else {
+      return res.status(404).json({ message: 'User not found' });
+    }
+  
+    
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+exports.updateUser = async (req, res) => {
+  const id = req.params.id;
+  // const firstName = req.params.firstName;
+  // const lastName = req.params.lastName;
+  // const email = req.params.email;
+  // const password = req.params.password;
+  const updateFields = {};
+
+  // Check if each field is not empty and update the corresponding field
+  if (req.params.firstName !== null) {
+    updateFields.firstName = req.params.firstName;
+  }
+
+  if (req.params.lastName !== null) {
+    updateFields.lastName = req.params.lastName;
+  }
+
+  if (req.params.email !== null) {
+    updateFields.email = req.params.email;
+  }
+
+  if (req.params.password !== null) {
+    // Hash the password before updating it
+    const hashedPassword = await bcrypt.hash(req.params.password, 10);
+    updateFields.password = hashedPassword;
+  }
+
+  try {
+    const result = await User.updateOne(
+      { _id: id },
+      { $set: updateFields }
+    );
+
+    // Check if a document was updated
+    if (result.modifiedCount === 1) {
+      return res.status(200).json({ message: 'Fields updated successfully' });
+    } else {
+      return res.status(404).json({ message: 'User not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
